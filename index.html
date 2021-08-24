@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>抽签</title>
+    <style scoped>
+      .container {
+        max-width: 1000px;
+        margin: auto;
+        text-align: center;
+        font-size: 100%;
+      }
+
+      .leftside {
+        border: 1px solid rgba(46, 44, 44, 0.336);
+        height: 500px;
+        width: 48%;
+        box-sizing: border-box;
+        float: left;
+      }
+
+      .leftside:hover {
+        box-shadow: 0px 0px 5px rgb(117, 114, 114);
+        border: 1px solid rgba(250, 250, 250, 0);
+      }
+
+      input {
+        width: 80%;
+        height: 30px;
+        outline: none;
+      }
+
+      input:focus {
+        border: 2px solid rgba(105, 231, 193, 0.842);
+        box-shadow: 2em;
+      }
+
+      button {
+        background: rgba(105, 223, 231, 0.842);
+        color: white;
+        border-radius: 1em;
+        height: 30px;
+        width: 45px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+      }
+
+      button:focus {
+        box-shadow: 1em;
+        border: 2px solid rgba(55, 107, 110, 0.842);
+      }
+
+      .rightside {
+        width: 48%;
+        height: 300px;
+        border: 1px solid rgba(46, 44, 44, 0.336);
+        margin-top: 20px;
+        margin-left: 20px;
+        box-sizing: border-box;
+        float: left;
+      }
+
+      .rightside:hover {
+        box-shadow: 0px 0px 4px rgb(117, 114, 114);
+        border: none;
+      }
+
+      ul {
+        list-style: none;
+        height: 350px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        line-height: 30px;
+        text-align: center;
+      }
+
+      ul li {
+        text-align: left;
+        padding-top: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <!--人员设置选项-->
+      <div class="leftside">
+        <label for=""><b>添加新的奖励:</b></label>
+        <input
+          type="text"
+          placeholder="输入对象"
+          v-model="need"
+          @keyup.enter="adduser"
+          v-focus
+        />
+        <button @click="adduser">加入</button>
+        <button style="width: 150px;margin-top: 20px;" @click="addclass">
+          生成奖池
+        </button>
+        <ul>
+          <li v-for="item in user">
+            {{ item }} <button @click="removeuser(item)">删除</button>
+          </li>
+        </ul>
+      </div>
+      <!--显示抽奖界面-->
+      <div class="rightside">
+        <button @click="start">开始</button>
+        <div class="lucky" style="height: 100px;">{{ luckboy }}</div>
+      </div>
+    </div>
+
+    <script>
+      var app = new Vue({
+        el: '.container',
+        data: {
+          user: [],
+          need: '',
+          show: true,
+          luckboy: '看看抽到什么?',
+          class: [
+            {
+              name: '谢谢惠顾',
+            },
+            {
+              name: '八折优惠',
+            },
+            {
+              name: '再抽一次',
+            },
+            {
+              name: '加时一倍',
+            },
+            {
+              name: '返现五毛',
+            },
+            {
+              name: '要什么奖励你说的算',
+            },
+          ],
+        },
+        methods: {
+          adduser() {
+            var user = this.user;
+            var value = this.need;
+            user.push(value);
+            this.need = null;
+          },
+          removeuser(user) {
+            for (i = 0; i <= this.user.length; i++) {
+              if (this.user[i] == user) {
+                app.user.splice(i, 1);
+                break;
+              }
+            }
+          },
+          start() {
+            if (this.user == '' || this.user == null) {
+              this.luckboy = '添加新的奖励';
+            } else {
+              var m = Math.floor(Math.random() * this.user.length);
+              for (i = 0; i <= this.user.length; i++) {
+                if (this.user[i] == this.user[m]) {
+                  this.luckboy = this.user[i];
+                }
+              }
+            }
+          },
+          addclass() {
+            if (this.class == '' || this.class == null) {
+              alert('未找到对象');
+            } else {
+              for (i = 0; i <= this.class.length; i++) {
+                this.user.push(this.class[i].name);
+              }
+            }
+          },
+        },
+        directives: {
+          focus: {
+            // 指令的定义
+            inserted: function(el) {
+              el.focus();
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
